@@ -28,14 +28,26 @@ jobs:
 
           mkdir $DEST
 
-          curl -s https://api.github.com/repos/$PACKAGE/releases?per_page=1 \
-            | jq -r '
-                .[0].assets[]
-                  | select(.name | index("linux-x86_64"))
-                  | .browser_download_url
-              ' \
-            | xargs curl -sL \
-            | tar zx
+          download_bin () {
+            curl -s https://api.github.com/repos/$PACKAGE/releases?per_page=1 \
+              | jq -r '
+                  .[0].assets[]
+                    | select(.name | index("linux-x86_64"))
+                    | .browser_download_url
+                ' \
+              | xargs curl -sL \
+              | tar zx
+          }
+
+          for N in {1..10}
+          do
+            if download_bin
+            then
+              break;
+            fi
+
+            sleep 30s
+          done
 
           time ./releasesfeed > $DEST/feed.xml
 
