@@ -25,11 +25,12 @@ jobs:
           set -xeuo pipefail
 
           DEST=build
+          RELEASES_URL="https://api.github.com/repos/$PACKAGE/releases?per_page=1"
 
           mkdir $DEST
 
           download_bin () {
-            curl -s https://api.github.com/repos/$PACKAGE/releases?per_page=1 \
+            curl -s "$RELEASES_URL" \
               | jq -r '
                   .[0].assets[]
                     | select(.name | index("linux-x86_64"))
@@ -46,7 +47,10 @@ jobs:
               break;
             fi
 
-            sleep 30s
+            sleep 1m
+
+            # Print response from the GitHub API before retry.
+            curl "$RELEASES_URL"
           done
 
           time ./releasesfeed > $DEST/feed.xml
