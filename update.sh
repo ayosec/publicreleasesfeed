@@ -9,7 +9,7 @@ mkdir $DEST
 
 get_releases() {
   curl -s \
-    -H "Authorization: Bearer $RF_GITHUB_TOKENS" \
+    -H "Authorization: Bearer $GITHUB_TOKEN" \
     "$RELEASES_URL"
 }
 

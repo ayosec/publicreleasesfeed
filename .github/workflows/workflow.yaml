@@ -19,6 +19,7 @@ jobs:
       - name: Generate feed.
         env:
           RF_GITHUB_TOKENS: ${{ secrets.RF_GITHUB_TOKENS }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PACKAGE: ayosec/releasesfeed
 
         run: ./update.sh
